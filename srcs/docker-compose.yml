@@ -1,0 +1,49 @@
+version: "3.5"
+
+services:
+  nginx:
+    container_name: nginx
+    build: ./requirements/nginx
+    depends_on:
+      - wordpress
+    ports:
+      - 443:443
+    networks:
+      - network
+    restart: always
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb
+    volumes:
+      - wordpress_vol:/var/www/html
+    networks:
+      - network
+    restart: always
+  wordpress:
+    container_name: wordpress
+    build: ./requirements/wordpress
+    depends_on:
+      - mariadb
+    volumes:
+      - wordpress_vol:/var/www/html
+    networks:
+      - network
+    restart: always
+
+volumes:
+  mariadb_vol:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /Users/jde-groo/goinfre/data/mariadb #/home/${LOCAL_USER}/data/mariadb
+  wordpress_vol:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /Users/jde-groo/goinfre/data/wordpress #/home/${LOCAL_USER}/data/wordpress
+
+networks:
+  network:
+    driver: bridge
