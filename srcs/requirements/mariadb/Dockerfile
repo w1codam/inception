@@ -5,6 +5,8 @@ RUN apt install -y mariadb-server
 
 EXPOSE 3306
 
+# copy configuration files
+
 # configure
 COPY ./tools/configure.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/configure.sh
