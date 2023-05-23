@@ -13,6 +13,7 @@ services:
     networks:
       - network
     restart: always
+    env_file: .env
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb
@@ -21,6 +22,7 @@ services:
     networks:
       - network
     restart: always
+    env_file: .env
   wordpress:
     container_name: wordpress
     build: ./requirements/wordpress
@@ -31,6 +33,7 @@ services:
     networks:
       - network
     restart: always
+    env_file: .env
 
 volumes:
   mariadb_vol:
