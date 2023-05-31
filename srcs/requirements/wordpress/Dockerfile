@@ -1,17 +1,22 @@
 FROM debian:buster
 
-RUN apt update
-RUN apt install -y php7.3 php-mysqli php-fpm curl
-
 EXPOSE 9000
 
-# copy configuration files
-COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d/
+# Update and upgrade packages, then install packages
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y php7.3-mysql php7.3-fpm mariadb-client curl
 
-# configure
-COPY ./tools/configure.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/configure.sh
-RUN bash /usr/local/bin/configure.sh
-RUN rm -f /usr/local/bin/configure.sh
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+RUN chmod +x wp-cli.phar
+RUN mv wp-cli.phar /usr/local/bin/wp
 
-# run entry
+RUN mkdir -p /run/php
+
+RUN sed -i "s/listen.*/listen = wordpress:9000/" /etc/php/7.3/fpm/pool.d/www.conf
+
+COPY tools/configure.sh /var/www/
+RUN chmod +x /var/www/configure.sh
+
+ENTRYPOINT ["/var/www/configure.sh"]
+
+CMD ["php-fpm7.3", "-F"]

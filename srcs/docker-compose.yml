@@ -1,4 +1,4 @@
-version: "3.5"
+version: "3"
 
 services:
   nginx:
@@ -13,7 +13,13 @@ services:
     networks:
       - network
     restart: always
-    env_file: .env
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_HOSTNAME=${MYSQL_HOSTNAME}
+      - MYSQL_USERNAME=${MYSQL_USERNAME}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb
@@ -22,7 +28,13 @@ services:
     networks:
       - network
     restart: always
-    env_file: .env
+    environment:
+      - SSL_COUNTRY=${SSL_COUNTRY}
+      - SSL_STATE=${SSL_STATE}
+      - SSL_LOCALITY=${SSL_LOCALITY}
+      - SSL_ORGANISATION=${SSL_ORGANISATION}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+
   wordpress:
     container_name: wordpress
     build: ./requirements/wordpress
@@ -33,7 +45,16 @@ services:
     networks:
       - network
     restart: always
-    env_file: .env
+    environment:
+      - WP_ADMIN_USERNAME=${WP_ADMIN_USERNAME}
+      - WP_ADMIN_PASSWORD=${WP_ADMIN_PASSWORD}
+      - WP_USER_USERNAME=${WP_USER_USERNAME}
+      - WP_USER_PASSWORD=${WP_USER_PASSWORD}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_HOSTNAME=${MYSQL_HOSTNAME}
+      - MYSQL_USERNAME=${MYSQL_USERNAME}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
 
 volumes:
   mariadb_vol:

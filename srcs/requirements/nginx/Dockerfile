@@ -1,16 +1,29 @@
 FROM debian:buster
 
-RUN apt update
-RUN apt install -y nginx openssl
-
 EXPOSE 443
 
-# copy configuration files
+RUN apt-get update
+RUN apt-get install -y nginx openssl
 
-# configure
-COPY ./tools/configure.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/configure.sh
-RUN bash /usr/local/bin/configure.sh
-RUN rm -f /usr/local/bin/configure.sh
+COPY conf/nginx.conf /etc/nginx/sites-available/nginx.conf
 
-# run entry
+RUN rm -rf /etc/nginx/sites-enabled/*
+RUN ln -sf /etc/nginx/sites-available/nginx.conf /etc/nginx/sites-enabled/nginx.conf
+
+COPY tools/configure.sh /usr/bin/
+RUN chmod +x /usr/bin/configure.sh
+
+RUN openssl req -new \
+	-newkey rsa:2048 \
+	-x509 \
+	-sha256 \
+	-days 365 \
+	-nodes \
+	-out /etc/ssl/certs/certificate.crt \
+	-keyout /etc/ssl/private/certificate.key \
+	-subj "/C=$SSL_COUNTRY/ST=$SSL_STATE/L=$SSL_LOCALITY/O=$SSL_ORGANISATION/CN=$DOMAIN_NAME"
+
+
+ENTRYPOINT ["configure.sh"]
+# CMD ["nginx", "-g", "daemon off;"]
+CMD ["sleep", "10000"]

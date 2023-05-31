@@ -1,16 +1,17 @@
 FROM debian:buster
 
-RUN apt update
-RUN apt install -y mariadb-server
-
 EXPOSE 3306
 
-# copy configuration files
+RUN apt-get update
+RUN apt-get install -y mariadb-server
 
-# configure
-COPY ./tools/configure.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/configure.sh
-RUN bash /usr/local/bin/configure.sh
-RUN rm -f /usr/local/bin/configure.sh
 
-# run entry
+COPY tools/configure.sh /usr/bin/
+RUN chmod +x /usr/bin/configure.sh
+
+RUN mkdir -p /var/run/mysqld
+RUN chown -R mysql:root /var/run/mysqld
+
+
+ENTRYPOINT ["configure.sh"]
+CMD ["mysqld"]
