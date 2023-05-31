@@ -1,0 +1,79 @@
+version: "3"
+
+services:
+  nginx:
+    container_name: nginx
+    build: ./requirements/nginx
+    depends_on:
+      - wordpress
+    volumes:
+      - wordpress_vol:/var/www/html
+    ports:
+      - 443:443
+    networks:
+      - network
+    restart: always
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_HOSTNAME=${MYSQL_HOSTNAME}
+      - MYSQL_USERNAME=${MYSQL_USERNAME}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb
+    volumes:
+      - mariadb_vol:/var/lib/mysql
+    networks:
+      - network
+    restart: always
+    environment:
+      - SSL_COUNTRY=${SSL_COUNTRY}
+      - SSL_STATE=${SSL_STATE}
+      - SSL_LOCALITY=${SSL_LOCALITY}
+      - SSL_ORGANISATION=${SSL_ORGANISATION}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_HOSTNAME=${MYSQL_HOSTNAME}
+      - MYSQL_USERNAME=${MYSQL_USERNAME}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
+  wordpress:
+    container_name: wordpress
+    build: ./requirements/wordpress
+    depends_on:
+      - mariadb
+    volumes:
+      - wordpress_vol:/var/www/html
+    networks:
+      - network
+    restart: always
+    environment:
+      - WP_ADMIN_USERNAME=${WP_ADMIN_USERNAME}
+      - WP_ADMIN_PASSWORD=${WP_ADMIN_PASSWORD}
+      - WP_USER_USERNAME=${WP_USER_USERNAME}
+      - WP_USER_PASSWORD=${WP_USER_PASSWORD}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_HOSTNAME=${MYSQL_HOSTNAME}
+      - MYSQL_USERNAME=${MYSQL_USERNAME}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
+volumes:
+  mariadb_vol:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device:  /Users/justus/Desktop/data/mariadb
+  wordpress_vol:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device:  /Users/justus/Desktop/data/wordpress
+
+networks:
+  network:
+    driver: bridge
