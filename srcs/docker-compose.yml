@@ -14,11 +14,11 @@ services:
       - network
     restart: always
     environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_HOSTNAME=${MYSQL_HOSTNAME}
-      - MYSQL_USERNAME=${MYSQL_USERNAME}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - DOMAIN_NAME=${DOMAIN_NAME}
+      - SSL_COUNTRY=${SSL_COUNTRY}
+      - SSL_STATE=${SSL_STATE}
+      - SSL_LOCALITY=${SSL_LOCALITY}
+      - SSL_ORGANISATION=${SSL_ORGANISATION}
     
   mariadb:
     container_name: mariadb
@@ -29,11 +29,6 @@ services:
       - network
     restart: always
     environment:
-      - SSL_COUNTRY=${SSL_COUNTRY}
-      - SSL_STATE=${SSL_STATE}
-      - SSL_LOCALITY=${SSL_LOCALITY}
-      - SSL_ORGANISATION=${SSL_ORGANISATION}
-      - DOMAIN_NAME=${DOMAIN_NAME}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_HOSTNAME=${MYSQL_HOSTNAME}
       - MYSQL_USERNAME=${MYSQL_USERNAME}
@@ -66,13 +61,13 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /Users/jde-groo/goinfre/data/mariadb #/home/${LOCAL_USER}/data/mariadb
+      device: /home/${LOCAL_USER}/data/mariadb
   wordpress_vol:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /Users/jde-groo/goinfre/data/wordpress #/home/${LOCAL_USER}/data/wordpress
+      device: /home/${LOCAL_USER}/data/wordpress
 
 networks:
   network:
