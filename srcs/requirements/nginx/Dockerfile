@@ -26,4 +26,3 @@ RUN openssl req -new \
 
 ENTRYPOINT ["configure.sh"]
 CMD ["nginx", "-g", "daemon off;"]
-# CMD ["sleep", "10000"]
