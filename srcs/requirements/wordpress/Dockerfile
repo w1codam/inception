@@ -8,7 +8,7 @@ RUN apt-get install -y php7.3-mysql php7.3-fpm mariadb-client curl
 
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 RUN chmod +x wp-cli.phar
-RUN mv wp-cli.phar /usr/local/bin/wp
+RUN mv wp-cli.phar /usr/local/bin/
 
 RUN mkdir -p /run/php
 

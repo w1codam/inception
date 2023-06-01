@@ -15,3 +15,4 @@ RUN chown -R mysql:root /var/run/mysqld
 
 ENTRYPOINT ["configure.sh"]
 CMD ["mysqld"]
+# CMD ["sleep", "50000"]
